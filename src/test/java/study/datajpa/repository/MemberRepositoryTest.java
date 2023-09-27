@@ -46,4 +46,30 @@ class MemberRepositoryTest {
 
     }
 
+    @Test
+    public void findByUsernameAndGreaterThan() {
+        Member m1 = new Member("AAA",10);
+        Member m2 = new Member("BBB",20);
+
+        memberRepository.save(m1);
+        memberRepository.save(m2);
+
+        List<Member> members = memberRepository.findByUsernameAndAgeGreaterThan("BBB", 15);
+
+        assertThat(members.get(0).getAge()).isEqualTo(20);
+    }
+
+    @Test
+    public void testQuery() {
+        Member m1 = new Member("AAA",10);
+        Member m2 = new Member("BBB",20);
+
+        memberRepository.save(m1);
+        memberRepository.save(m2);
+
+        List<Member> members = memberRepository.findUser("BBB",20);
+
+        assertThat(members.size()).isEqualTo(1);
+    }
+
 }
