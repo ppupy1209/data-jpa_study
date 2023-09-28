@@ -13,6 +13,8 @@ import study.datajpa.dto.MemberDto;
 import study.datajpa.entity.Member;
 import study.datajpa.entity.Team;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import java.util.Arrays;
 import java.util.List;
 
@@ -25,6 +27,11 @@ class MemberRepositoryTest {
 
     @Autowired MemberRepository memberRepository;
     @Autowired TeamRepository teamRepository;
+
+    @PersistenceContext
+    EntityManager em;
+
+
 
 
     @Test
@@ -143,7 +150,7 @@ class MemberRepositoryTest {
         PageRequest pageRequest = PageRequest.of(0,3, Sort.by(Sort.Direction.DESC,"username"));
 
         Page<Member> page = memberRepository.findByAge(age,pageRequest);
-        
+
         Page<MemberDto> map = page.map(member -> new MemberDto(member.getId(), member.getUsername(), null));
 
         List<Member> content = page.getContent();
@@ -153,6 +160,21 @@ class MemberRepositoryTest {
             System.out.println("member =" + member);
         }
 
+    }
+
+    @Test
+    public void bulkUpdate() {
+        memberRepository.save(new Member("m1",10));
+        memberRepository.save(new Member("m2",19));
+        memberRepository.save(new Member("m3",20));
+        memberRepository.save(new Member("m4",21));
+        memberRepository.save(new Member("m5",40));
+
+        int resultCount = memberRepository.bulkAgePlus(20);
+//        em.flush();
+//        em.clear();
+
+        assertThat(resultCount).isEqualTo(3);
     }
 
 }
