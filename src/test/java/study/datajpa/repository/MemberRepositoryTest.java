@@ -17,6 +17,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -198,6 +199,34 @@ class MemberRepositoryTest {
             System.out.println("member = " + member.getUsername());
             System.out.println("member.team = " + member.getTeam().getName());
         }
+
+    }
+
+    @Test
+    public void queryHint() {
+
+        Member member1 = new Member("member1",10);
+        memberRepository.save(member1);
+        em.flush();
+        em.clear();
+
+        Member findMember = memberRepository.findReadOnlyByUsername("member1");
+        findMember.setUsername("member2");
+
+        em.flush();
+    }
+
+    @Test
+    public void lock() {
+
+        Member member1 = new Member("member1",10);
+        memberRepository.save(member1);
+        em.flush();
+        em.clear();
+
+       List<Member> findMember = memberRepository.findLockByUsername("member1");
+
+
 
     }
 
